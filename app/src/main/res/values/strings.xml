@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">BattleShip</string>
+    <string name="app_auth_login">Login</string>
+    <string name="app_auth_register">Register</string>
+    <string name="app_auth_username">Username</string>
+    <string name="app_auth_password">Password</string>
 </resources>

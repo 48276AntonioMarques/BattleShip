@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleship
+package pt.isel.pdm.battleship.service
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
@@ -6,8 +6,10 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import pt.isel.pdm.battleship.R
 import pt.isel.pdm.battleship.ui.theme.BattleShipTheme
 
 @Composable
@@ -28,24 +30,24 @@ fun AuthScreen() {
                 ) {
                     Column {
                         Row {
-                            Text("Login")
+                            Text(stringResource(id = R.string.app_auth_login))
                             Text("|")
-                            Text("Register")
+                            Text(stringResource(id = R.string.app_auth_register))
                         }
                         Column {
                             TextField(
-                                value = TextFieldValue("username"),
+                                value = TextFieldValue(stringResource(id = R.string.app_auth_username)),
                                 label = {
-                                    Text(text = "Username")
+                                    Text(text = stringResource(id = R.string.app_auth_username))
                                 },
                                 onValueChange = {
 
                                 }
                             )
                             TextField(
-                                value = TextFieldValue("password"),
+                                value = TextFieldValue(stringResource(id = R.string.app_auth_password)),
                                 label = {
-                                    Text(text = "Password")
+                                    Text(text = stringResource(id = R.string.app_auth_password))
                                 },
                                 onValueChange = {
 
@@ -54,7 +56,7 @@ fun AuthScreen() {
                         }
                     }
                     Button(onClick = { /*TODO*/ }) {
-                        Text(text = "Login")
+                        Text(text = stringResource(id = R.string.app_auth_login))
                     }
                 }
             }
