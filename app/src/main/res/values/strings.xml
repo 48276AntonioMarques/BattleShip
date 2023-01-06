@@ -4,4 +4,6 @@
     <string name="app_auth_register">Register</string>
     <string name="app_auth_username">Username</string>
     <string name="app_auth_password">Password</string>
+    <string name="app_author_email_subject">About PDM BattleShip 2023</string>
+    <string name="app_author_email_app_not_found">No emailing app was found</string>
 </resources>

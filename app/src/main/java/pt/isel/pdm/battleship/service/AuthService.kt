@@ -6,17 +6,23 @@ import kotlinx.coroutines.delay
 import java.net.URL
 import kotlin.coroutines.suspendCoroutine
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-data class Param (val name: String, val type: String)
-
 data class User(val name: String, val token: String)
+fun UserDto.toUser(): User {
+    this.properties?: throw Exception()
+    return User(this.properties.name, this.properties.token)
+}
+
+enum class AuthType{ LOGIN, REGISTER }
 
 interface AuthService {
-    suspend fun getLoginParams(): List<Param>
-    suspend fun login(params: List<Param>): User
+    suspend fun login(username: String): User
+    suspend fun register(username: String): User
 }
 
 class RealAuthService(
@@ -24,55 +30,79 @@ class RealAuthService(
     private val jsonFormatter: Gson,
     private val authURL: URL
 ) : AuthService {
-    override suspend fun getLoginParams(): List<Param> {
-
-        val result = suspendCoroutine<List<Param>> { continuation ->
+    override suspend fun login(username: String): User {
+        return suspendCoroutine { continuation ->
             val request = Request.Builder()
                 .url(authURL)
+                .method("POST", "{\"name\":\"$username\"}".toRequestBody("application/json".toMediaType()))
                 .build()
-            Log.v("AuthService", "Thread ${Thread.currentThread().name}: waiting for logins params")
+            Log.v("AuthService", "Thread ${Thread.currentThread().name}: logging in")
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     continuation.resumeWithException(e)
                 }
 
                 override fun onResponse(call: Call, response: Response) {
-                    Log.v("AuthService", "Thread ${Thread.currentThread().name}: responding to logins params")
+                    Log.v("AuthService", "Thread ${Thread.currentThread().name}: parsing response")
                     val contentType = response.body?.contentType()
                     if (response.isSuccessful && contentType != null && contentType == SirenMediaType) {
-                        val quoteDto = jsonFormatter.fromJson<UserDto>(
+                        val userDto = jsonFormatter.fromJson<UserDto>(
                             response.body?.string(),
                             UserDtoType.type
                         )
-                        continuation.resume(quoteDto.toQuote())
+                        continuation.resume(userDto.toUser())
                     }
                     else {
-                        TODO()
+                        continuation.resumeWithException(Exception("User failed to login"))
+                        TODO("Display error message when login fails")
                     }
                 }
             })
         }
-        return result
     }
 
-    override suspend fun login(params: List<Param>): User {
-        TODO("Not yet implemented")
+    override suspend fun register(username: String): User {
+        return suspendCoroutine { continuation ->
+            val request = Request.Builder()
+                .url(authURL)
+                .method("POST", "{\"name\":\"$username\"}".toRequestBody("application/json".toMediaType()))
+                .build()
+            Log.v("AuthService", "Thread ${Thread.currentThread().name}: registering")
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    continuation.resumeWithException(e)
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    Log.v("AuthService", "Thread ${Thread.currentThread().name}: parsing registry")
+                    val contentType = response.body?.contentType()
+                    if (response.isSuccessful && contentType != null && contentType == SirenMediaType) {
+                        val userDto = jsonFormatter.fromJson<UserDto>(
+                            response.body?.string(),
+                            UserDtoType.type
+                        )
+                        continuation.resume(userDto.toUser())
+                    }
+                    else {
+                        continuation.resumeWithException(Exception("User failed to get registered"))
+                        TODO("Display error message when login fails")
+                    }
+                }
+            })
+        }
     }
 }
 
 class FakeAuthService : AuthService {
-    override suspend fun getLoginParams(): List<Param> {
-        val params = listOf(
-            Param("username", "string"),
-                Param("password", "string")
-        )
+    override suspend fun login(username: String): User {
+        val newUser = User(name = username, token = "token abc1234")
         delay(timeMillis = 1000)
-        return params
+        return newUser
     }
 
-    override suspend fun login(params: List<Param>): User {
-        val user = User(name = "", token = "token abc1234")
+    override suspend fun register(username: String): User {
+        val newUser = User(name = username, token = "token abc1234")
         delay(timeMillis = 1000)
-        return user
+        return newUser
     }
 }

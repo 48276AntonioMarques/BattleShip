@@ -1,19 +1,31 @@
-package pt.isel.pdm.battleship
+package pt.isel.pdm.battleship.screen
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import pt.isel.pdm.battleship.service.User
 import pt.isel.pdm.battleship.ui.theme.BattleShipTheme
 
 @Composable
-fun MenuScreen() {
+fun MenuScreen(
+    onRankingRequested: () -> Unit,
+    onAuthorRequested: () -> Unit,
+    onAuthRequested: () -> Unit,
+    onInvitesRequested: () -> Unit,
+    onChallengeRequested: () -> Unit,
+    user: User?,
+    invitesCount: Int,
+    feedbackText: String
+) {
+
+    fun isLogged() = user != null
+
     BattleShipTheme {
         Log.v("TAG", "QuoteOfDayScreen composed")
         Scaffold(
@@ -34,10 +46,41 @@ fun MenuScreen() {
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Button (
-                        onClick = { Log.v("TAG", "Clicked!") }
+                    Column {
+                        if (isLogged()) {
+                            Column {
+                                Row {
+                                    Button (
+                                        onClick = onChallengeRequested
+                                    ) {
+                                        Icon(imageVector = Icons.Default.ArrowForward, contentDescription = null)
+                                    }
+                                }
+                                if (feedbackText.isNotBlank()) Text(text = feedbackText)
+                            }
+                            Button (
+                                onClick = onInvitesRequested
                             ) {
-                        Text("Login")
+                                Text("See Invites ($invitesCount)")
+                            }
+                        }
+                        else {
+                            Button (
+                                onClick = onAuthRequested
+                            ) {
+                                Text("Login or Register")
+                            }
+                        }
+                        Button (
+                            onClick = onRankingRequested
+                        ) {
+                            Text("Rank")
+                        }
+                        Button (
+                            onClick = onAuthorRequested
+                        ) {
+                            Text("Author")
+                        }
                     }
                 }
             }
@@ -49,6 +92,51 @@ fun MenuScreen() {
 @Composable
 fun MenuScreenPreview() {
     BattleShipTheme {
-        MenuScreen()
+        MenuScreen(
+            onRankingRequested = { Log.v("Menu", "Ranking Requested!") },
+            onAuthorRequested = { Log.v("Menu", "Author Requested!") },
+            onAuthRequested = { Log.v("Menu", "Auth Requested!") },
+            onInvitesRequested = { Log.v("Menu", "Invites Requested!") },
+            onChallengeRequested = { Log.v("Menu", "Challenge Requested!") },
+            null,
+            0,
+            ""
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LoggedUserMenuScreenPreview() {
+    BattleShipTheme {
+        val user = User("Henrique", "Bearer 1234fg")
+        MenuScreen(
+            onRankingRequested = { Log.v("Menu", "Ranking Requested!") },
+            onAuthorRequested = { Log.v("Menu", "Author Requested!") },
+            onAuthRequested = { Log.v("Menu", "Auth Requested!") },
+            onInvitesRequested = { Log.v("Menu", "Invites Requested!") },
+            onChallengeRequested = { Log.v("Menu", "Challenge Requested!") },
+            user,
+            0,
+            ""
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LoggedUserMenuScreenWithInvitesPreview() {
+    BattleShipTheme {
+        val user = User("Henrique", "Bearer 1234fg")
+        MenuScreen(
+            onRankingRequested = { Log.v("Menu", "Ranking Requested!") },
+            onAuthorRequested = { Log.v("Menu", "Author Requested!") },
+            onAuthRequested = { Log.v("Menu", "Auth Requested!") },
+            onInvitesRequested = { Log.v("Menu", "Invites Requested!") },
+            onChallengeRequested = { Log.v("Menu", "Challenge Requested!") },
+            user,
+            (1..99).random(),
+            ""
+        )
     }
 }

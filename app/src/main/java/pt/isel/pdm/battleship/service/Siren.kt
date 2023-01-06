@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.internal.http.HttpMethod
 
 //Based on "https://github.com/kevinswiber/siren"
 
