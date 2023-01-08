@@ -1,11 +1,16 @@
 package pt.isel.pdm.battleship.common
 
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import java.net.URI
 import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.internal.http.HttpMethod
+import java.lang.reflect.Type
 
 //Based on "https://github.com/kevinswiber/siren"
 
@@ -40,8 +45,8 @@ data class SirenAction(
     val title: String? = null,
     @SerializedName("class")
     val clazz: List<String>? = null,
-    val method: HttpMethod? = null,
-    val type: MediaType? = null,
+    val method: String? = null,
+    val type: String? = null,
     val fields: List<Field>? = null
 ) {
     /**
@@ -90,7 +95,7 @@ data class EmbeddedEntity<T>(
     val properties: T? =null,
     val entities: List<SubEntity>? = null,
     val links: List<SirenLink>? = null,
-    val actions: SirenAction? = null,
+    val actions: List<SirenAction>? = null,
     val title: String? = null
 ) : SubEntity() {
     companion object {
@@ -98,3 +103,49 @@ data class EmbeddedEntity<T>(
             object : TypeToken<EmbeddedEntity<T>>() { }
     }
 }
+
+
+/**
+ * Gson deserializer for the SubEntity sum type
+ */
+class SubEntityDeserializer<T>(private val propertiesType: Type) : JsonDeserializer<SubEntity> {
+
+    override fun deserialize(
+        json: JsonElement,
+        typeOfT: Type,
+        context: JsonDeserializationContext
+    ): SubEntity {
+
+        val entity = json.asJsonObject
+        val entityPropertiesMember = "properties"
+        return if (entity.has(entityPropertiesMember)) {
+            val item = context.deserialize<T>(
+                entity.getAsJsonObject(entityPropertiesMember),
+                propertiesType
+            )
+            EmbeddedEntity(
+                rel = entity.getAsListOfString("rel") ?: emptyList(),
+                clazz = entity.getAsListOfString("class"),
+                properties = item,
+                links = entity.getAsListOf("links", SirenLink::class.java, context),
+                actions = entity.getAsListOf("actions", SirenAction::class.java, context),
+                title = entity.get("title")?.asString
+            )
+        }
+        else {
+            context.deserialize(entity, EmbeddedLink::class.java)
+        }
+    }
+}
+
+private fun JsonObject.getAsListOfString(propertyName: String): List<String>? =
+    getAsJsonArray(propertyName)?.map { it.asString }
+
+private fun <T> JsonObject.getAsListOf(
+    propertyName: String,
+    type: Class<T>,
+    context: JsonDeserializationContext
+): List<T>? =
+    getAsJsonArray(propertyName)?.map {
+        context.deserialize<T>(it, type)
+    }

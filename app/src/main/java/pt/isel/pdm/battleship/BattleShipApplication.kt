@@ -12,16 +12,17 @@ interface DependenciesContainer {
     val authService: AuthService
 }
 
-private val authAPI = URL("https://localhost:8080/")
+private const val authAPI = "https://4513-194-210-198-67.eu.ngrok.io/"
 
 class BattleShipApplication : DependenciesContainer, Application() {
     private val client by lazy { OkHttpClient() }
     private val gson by lazy { Gson() }
 
     override val authService: AuthService
-        get() = /*RealAuthService(
+        get() = RealAuthService(
             client = client,
             jsonFormatter = gson,
-            authURL = authAPI
-        )*/FakeAuthService()
+            registerURL = URL(authAPI + "users/"),
+            loginURL = URL(authAPI + "users/login/")
+        )
 }
