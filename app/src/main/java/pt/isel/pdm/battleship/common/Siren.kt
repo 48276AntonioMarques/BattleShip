@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleship.service
+package pt.isel.pdm.battleship.common
 
 import java.net.URI
 import com.google.gson.annotations.SerializedName
