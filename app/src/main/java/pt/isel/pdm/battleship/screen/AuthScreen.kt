@@ -24,12 +24,9 @@ fun AuthScreen(
     onRegisterTextUpdate: (TextFieldValue) -> Unit,
     onLoginRequested: () -> Unit,
     onRegisterRequested: () -> Unit,
-    loginErrorText: String,
-    registerErrorText: String,
     changeAuthType: (AuthType) -> Unit
 ) {
     BattleShipTheme {
-        Log.v("TAG", "AuthScreen composed")
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             backgroundColor = MaterialTheme.colors.background,
@@ -83,12 +80,6 @@ fun AuthScreen(
                             }
                         }
                         if (authType == AuthType.LOGIN) {
-                            if (loginErrorText.isNotBlank()) { Text(text = loginErrorText) }
-                        }
-                        else {
-                            if (registerErrorText.isNotBlank()) { Text(text = registerErrorText) }
-                        }
-                        if (authType == AuthType.LOGIN) {
                             Button(onClick = onLoginRequested) {
                                 Text(text = stringResource(id = R.string.app_auth_login))
                             }
@@ -117,8 +108,6 @@ fun AuthScreenPreview() {
             onRegisterTextUpdate = { Log.v("AuthScreen", "Register Text Update") },
             onLoginRequested = { Log.v("AuthScreen", "Login Requested") },
             onRegisterRequested = { Log.v("AuthScreen", "Register Requested") },
-            loginErrorText = "",
-            registerErrorText = "",
             changeAuthType = { Log.v("AuthScreen", "Auth Type Changed") }
         )
     }

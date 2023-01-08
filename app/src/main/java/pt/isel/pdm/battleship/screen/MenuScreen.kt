@@ -20,14 +20,12 @@ fun MenuScreen(
     onInvitesRequested: () -> Unit,
     onChallengeRequested: () -> Unit,
     user: User?,
-    invitesCount: Int,
-    feedbackText: String
+    invitesCount: Int
 ) {
 
     fun isLogged() = user != null
 
     BattleShipTheme {
-        Log.v("TAG", "QuoteOfDayScreen composed")
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             backgroundColor = MaterialTheme.colors.background,
@@ -48,15 +46,12 @@ fun MenuScreen(
                 ) {
                     Column {
                         if (isLogged()) {
-                            Column {
-                                Row {
-                                    Button (
-                                        onClick = onChallengeRequested
-                                    ) {
-                                        Icon(imageVector = Icons.Default.ArrowForward, contentDescription = null)
-                                    }
+                            Row {
+                                Button (
+                                    onClick = onChallengeRequested
+                                ) {
+                                    Icon(imageVector = Icons.Default.ArrowForward, contentDescription = null)
                                 }
-                                if (feedbackText.isNotBlank()) Text(text = feedbackText)
                             }
                             Button (
                                 onClick = onInvitesRequested
@@ -99,8 +94,7 @@ fun MenuScreenPreview() {
             onInvitesRequested = { Log.v("Menu", "Invites Requested!") },
             onChallengeRequested = { Log.v("Menu", "Challenge Requested!") },
             null,
-            0,
-            ""
+            0
         )
     }
 }
@@ -117,8 +111,7 @@ fun LoggedUserMenuScreenPreview() {
             onInvitesRequested = { Log.v("Menu", "Invites Requested!") },
             onChallengeRequested = { Log.v("Menu", "Challenge Requested!") },
             user,
-            0,
-            ""
+            0
         )
     }
 }
@@ -135,8 +128,7 @@ fun LoggedUserMenuScreenWithInvitesPreview() {
             onInvitesRequested = { Log.v("Menu", "Invites Requested!") },
             onChallengeRequested = { Log.v("Menu", "Challenge Requested!") },
             user,
-            (1..99).random(),
-            ""
+            (1..99).random()
         )
     }
 }
