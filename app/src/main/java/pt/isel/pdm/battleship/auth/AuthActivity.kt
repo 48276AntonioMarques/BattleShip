@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleship.activity
+package pt.isel.pdm.battleship.auth
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -8,7 +8,7 @@ import pt.isel.pdm.battleship.DependenciesContainer
 import pt.isel.pdm.battleship.common.KotlinActivity
 import pt.isel.pdm.battleship.screen.AuthScreen
 import pt.isel.pdm.battleship.service.AuthType
-import pt.isel.pdm.battleship.service.AuthViewModel
+import pt.isel.pdm.battleship.menu.MenuActivity
 
 class AuthActivity : KotlinActivity() {
 

@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleship.activity
+package pt.isel.pdm.battleship.menu
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,10 +6,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.mutableStateOf
+import pt.isel.pdm.battleship.auth.AuthActivity
 import pt.isel.pdm.battleship.DependenciesContainer
+import pt.isel.pdm.battleship.lobby.InvitesActivity
 import pt.isel.pdm.battleship.common.KotlinActivity
 import pt.isel.pdm.battleship.screen.MenuScreen
-import pt.isel.pdm.battleship.service.AuthViewModel
+import pt.isel.pdm.battleship.auth.AuthViewModel
 import pt.isel.pdm.battleship.service.User
 import java.lang.Exception
 

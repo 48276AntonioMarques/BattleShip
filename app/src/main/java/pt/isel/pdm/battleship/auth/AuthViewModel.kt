@@ -1,18 +1,17 @@
-package pt.isel.pdm.battleship.service
+package pt.isel.pdm.battleship.auth
 
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleship.R
 import pt.isel.pdm.battleship.common.UnexpectedResponseTypeException
+import pt.isel.pdm.battleship.service.AuthService
+import pt.isel.pdm.battleship.service.User
 import java.io.IOException
 import java.lang.Exception
 import java.lang.NullPointerException

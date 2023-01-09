@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleship.activity
+package pt.isel.pdm.battleship.menu
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -8,7 +8,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.ui.res.stringResource
 import pt.isel.pdm.battleship.R
 import pt.isel.pdm.battleship.screen.AuthorScreen
 

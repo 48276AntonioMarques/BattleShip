@@ -1,15 +1,15 @@
-package pt.isel.pdm.battleship.activity
+package pt.isel.pdm.battleship.lobby
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import pt.isel.pdm.battleship.screen.RankingScreen
+import pt.isel.pdm.battleship.screen.LobbyScreen
 
-class RankingActivity : ComponentActivity() {
+class LobbyActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            RankingScreen()
+            LobbyScreen()
         }
     }
 }

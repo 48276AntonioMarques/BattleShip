@@ -1,15 +1,15 @@
-package pt.isel.pdm.battleship.activity
+package pt.isel.pdm.battleship.menu
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import pt.isel.pdm.battleship.screen.GameScreen
+import pt.isel.pdm.battleship.screen.RankingScreen
 
-class GameActivity : ComponentActivity() {
+class RankingActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            GameScreen()
+            RankingScreen()
         }
     }
 }

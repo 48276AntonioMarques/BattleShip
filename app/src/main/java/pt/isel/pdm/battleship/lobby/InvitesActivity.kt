@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleship.activity
+package pt.isel.pdm.battleship.lobby
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
