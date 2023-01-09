@@ -1,6 +1,4 @@
-package pt.isel.pdm.battleship.service
-
-import pt.isel.pdm.battleship.common.SirenEntity
+package pt.isel.pdm.battleship.common
 
 data class UserDtoProperties(val name: String, val token: String)
 
