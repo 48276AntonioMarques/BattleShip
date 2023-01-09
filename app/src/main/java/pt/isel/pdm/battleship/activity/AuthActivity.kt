@@ -1,13 +1,13 @@
 package pt.isel.pdm.battleship.activity
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import pt.isel.pdm.battleship.DependenciesContainer
 import pt.isel.pdm.battleship.common.KotlinActivity
 import pt.isel.pdm.battleship.screen.AuthScreen
+import pt.isel.pdm.battleship.service.AuthType
 import pt.isel.pdm.battleship.service.AuthViewModel
 
 class AuthActivity : KotlinActivity() {
@@ -17,28 +17,25 @@ class AuthActivity : KotlinActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        Log.v("AuthActivity", "user is null: ${aus.user == null}")
-        if (aus.user != null) {
-            // There is a user logged in soo this page isn't meant to be on display no matter what
-            Log.v("AuthActivity", "finishing activity requested")
-            finish()
-        }
-
         setContent {
+            if (avm.user.value != null) {
+                // There is a user logged in so this activity isn't meant to be on display no matter what
+                MenuActivity.user.value = avm.user.value
+                finish()
+            }
+
             val username = rememberSaveable { mutableStateOf("") }
+            val authType = rememberSaveable { mutableStateOf(AuthType.LOGIN) }
+
             AuthScreen(
-                authType = avm.authType.value,
-                loginUsername = username.value,
-                registerUsername = username.value,
+                authType = authType.value,
+                username = username.value,
                 onLoginTextUpdate = { field -> username.value = field.text },
                 onRegisterTextUpdate = { field -> username.value = field.text },
-                onLoginRequested = {
-                    Log.v("AuthActivity", "Fetching Login")
-                    avm.fetchLogin(username.value)
-               },
-                onRegisterRequested = { avm.fetchRegister(username.value) },
-                changeAuthType = { newAuthType -> avm.changeAuth(newAuthType) }
+                onLoginRequested = { avm.fetchLogin(this, username.value) },
+                onRegisterRequested = { avm.fetchRegister(this, username.value) },
+                changeAuthType = { newAuthType -> authType.value = newAuthType },
+                avm.isAuthenticating.value
             )
         }
     }

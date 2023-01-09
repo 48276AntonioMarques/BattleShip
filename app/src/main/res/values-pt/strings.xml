@@ -5,6 +5,13 @@
     <string name="app_auth_register">Registar</string>
     <string name="app_auth_username">Utilizador</string>
     <string name="app_auth_password">Palavra Chave</string>
+    <string name="app_auth_loading">A carregar</string>
     <string name="app_author_email_subject">Sobre a batalha naval 2023 (PDM)</string>
     <string name="app_author_email_app_not_found">Não foi encontrada nenhuma aplicação de email</string>
+    <string name="app_auth_login_failed">Falha ao entrar</string>
+    <string name="app_auth_register_failed">Falha ao registar</string>
+    <string name="app_auth_logout_failed">Falha ao sair</string>
+    <string name="app_auth_io_fail">Falha ao conectar</string>
+    <string name="app_auth_unexpected_response_type">Resposta inesperada ao pedido</string>
+    <string name="app_auth_null_pointer">Erro a obter utilizador</string>
 </resources>

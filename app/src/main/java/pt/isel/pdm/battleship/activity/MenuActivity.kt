@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.mutableStateOf
 import pt.isel.pdm.battleship.DependenciesContainer
 import pt.isel.pdm.battleship.common.KotlinActivity
 import pt.isel.pdm.battleship.screen.MenuScreen
 import pt.isel.pdm.battleship.service.AuthViewModel
+import pt.isel.pdm.battleship.service.User
 import java.lang.Exception
 
 class MenuActivity : KotlinActivity() {
@@ -16,11 +18,15 @@ class MenuActivity : KotlinActivity() {
     private val aus by lazy { (application as DependenciesContainer).authService }
     private val avm by viewModels { AuthViewModel(aus) }
 
+    companion object {
+        val user = mutableStateOf<User?>(null)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val user = aus.user
-            Log.v("Menu Activity", "$user")
+            val user = user.value
+            Log.v("Menu Activity", "mUser: $user")
             MenuScreen(
                 onRankingRequested = { navigateToRankingScreen() },
                 onAuthorRequested = { navigateToAuthorScreen() },

@@ -4,6 +4,13 @@
     <string name="app_auth_register">Register</string>
     <string name="app_auth_username">Username</string>
     <string name="app_auth_password">Password</string>
+    <string name="app_auth_loading">Loading</string>
     <string name="app_author_email_subject">About PDM BattleShip 2023</string>
     <string name="app_author_email_app_not_found">No emailing app was found</string>
+    <string name="app_auth_login_failed">Login failed</string>
+    <string name="app_auth_register_failed">Register failed</string>
+    <string name="app_auth_logout_failed">Logout failed</string>
+    <string name="app_auth_io_fail">Failed to create connection</string>
+    <string name="app_auth_unexpected_response_type">Unxepected request response</string>
+    <string name="app_auth_null_pointer">Unable to get user</string>
 </resources>

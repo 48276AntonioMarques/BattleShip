@@ -12,7 +12,7 @@ interface DependenciesContainer {
     val authService: AuthService
 }
 
-private const val authAPI = "https://4513-194-210-198-67.eu.ngrok.io/"
+private const val authAPI = "https://20e4-194-210-198-67.eu.ngrok.io/"
 
 class BattleShipApplication : DependenciesContainer, Application() {
     private val client by lazy { OkHttpClient() }
