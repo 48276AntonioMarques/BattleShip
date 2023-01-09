@@ -62,7 +62,7 @@ data class SirenAction(
 
 data class SirenEntity<T>(
     @SerializedName("class") val clazz: List<String>? = null,
-    val properties: T? =null,
+    val properties: T? = null,
     val entities: List<SubEntity>? = null,
     val links: List<SirenLink>? = null,
     val actions: List<SirenAction>? = null,

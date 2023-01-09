@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleship.screen
+package pt.isel.pdm.battleship.lobby
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
@@ -13,13 +13,16 @@ import pt.isel.pdm.battleship.ui.TopBar
 import pt.isel.pdm.battleship.ui.theme.BattleShipTheme
 
 @Composable
-fun LobbyScreen() {
+fun LobbyScreen(
+    onBackRequested: () -> Unit
+) {
     BattleShipTheme {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             backgroundColor = MaterialTheme.colors.background,
             topBar = {
-                TopBar(onBackRequested = { Log.v("RankingScreen", "This is going to get u back. Eventually... ") }) },
+                TopBar(onBackRequested = onBackRequested)
+            },
         ) { innerPadding ->
             Column(
                 verticalArrangement = Arrangement.SpaceAround,
@@ -29,18 +32,7 @@ fun LobbyScreen() {
                     .fillMaxSize(),
             ) {
                 //TODO: Build this table with information fetched from (some yet to come) service
-                Row {
-                    Text(text = "Rank")
-                    Text(text = "Username")
-                    Text(text = "WinRate")
-                    Text(text = "GamesPlayed")
-                }
-                Row {
-                    Text(text = "1.")
-                    Text(text = "Henrique")
-                    Text(text = "90%")
-                    Text(text = "10")
-                }
+                Text(text = "AWAITING OPPONENT...")
             }
         }
     }
@@ -50,6 +42,8 @@ fun LobbyScreen() {
 @Composable
 fun LobbyScreenPreview() {
     BattleShipTheme {
-        LobbyScreen()
+        LobbyScreen(
+            onBackRequested = { Log.v("LobbyScreen", "Back requested") }
+        )
     }
 }

@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleship.screen
+package pt.isel.pdm.battleship.game
 
 import android.util.Log
 import androidx.compose.foundation.layout.*

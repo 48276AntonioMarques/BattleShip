@@ -10,8 +10,8 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleship.R
 import pt.isel.pdm.battleship.common.UnexpectedResponseTypeException
+import pt.isel.pdm.battleship.common.User
 import pt.isel.pdm.battleship.service.AuthService
-import pt.isel.pdm.battleship.service.User
 import java.io.IOException
 import java.lang.Exception
 import java.lang.NullPointerException

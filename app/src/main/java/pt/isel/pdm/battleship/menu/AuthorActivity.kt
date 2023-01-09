@@ -9,13 +9,13 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import pt.isel.pdm.battleship.R
-import pt.isel.pdm.battleship.screen.AuthorScreen
 
 class AuthorActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             AuthorScreen (
+                onBackRequested = { finish() },
                 onSendEmailRequested = { launchEmailingIntent() }
             )
         }

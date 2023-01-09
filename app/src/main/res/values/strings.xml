@@ -13,4 +13,8 @@
     <string name="app_auth_io_fail">Failed to create connection</string>
     <string name="app_auth_unexpected_response_type">Unxepected request response</string>
     <string name="app_auth_null_pointer">Unable to get user</string>
+    <string name="app_rank_error">Unable to get ranks</string>
+    <string name="app_invites_error">Unable show invites</string>
+    <string name="app_invites_none">No invites</string>
+    <string name="app_invites_loading">Loading invites</string>
 </resources>

@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleship.screen
+package pt.isel.pdm.battleship.auth
 
 import android.util.Log
 import androidx.compose.foundation.clickable
@@ -13,13 +13,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import kotlinx.coroutines.delay
 import pt.isel.pdm.battleship.R
 import pt.isel.pdm.battleship.service.AuthType
+import pt.isel.pdm.battleship.ui.TopBar
 import pt.isel.pdm.battleship.ui.theme.BattleShipTheme
 
 @Composable
 fun AuthScreen(
+    onBackRequested: () -> Unit,
     authType: AuthType,
     username: String,
     onLoginTextUpdate:  (TextFieldValue) -> Unit,
@@ -33,6 +34,9 @@ fun AuthScreen(
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             backgroundColor = MaterialTheme.colors.background,
+            topBar = {
+                TopBar(onBackRequested = onBackRequested)
+            }
         ) { innerPadding ->
             Column {
                 Box(
@@ -110,6 +114,7 @@ fun AuthScreen(
 fun LoginAuthScreenPreview() {
     BattleShipTheme {
         AuthScreen(
+            onBackRequested = { Log.v("AuthScreen", "This will take you back.") },
             authType = AuthType.LOGIN,
             username = "",
             onLoginTextUpdate = { Log.v("AuthScreen", "Login Text Update") },
@@ -127,6 +132,7 @@ fun LoginAuthScreenPreview() {
 fun RegisterAuthScreenPreview() {
     BattleShipTheme {
         AuthScreen(
+            onBackRequested = { Log.v("AuthScreen", "This will take you back.") },
             authType = AuthType.REGISTER,
             username = "",
             onLoginTextUpdate = { Log.v("AuthScreen", "Login Text Update") },
@@ -144,6 +150,7 @@ fun RegisterAuthScreenPreview() {
 fun LoadingAuthScreenPreview() {
     BattleShipTheme {
         AuthScreen(
+            onBackRequested = { Log.v("AuthScreen", "This will take you back.") },
             authType = AuthType.LOGIN,
             username = "",
             onLoginTextUpdate = { Log.v("AuthScreen", "Login Text Update") },
@@ -164,6 +171,7 @@ fun AuthScreenPreview() {
     val username = remember { mutableStateOf("") }
     BattleShipTheme {
         AuthScreen(
+            onBackRequested = { Log.v("AuthScreen", "This will take you back.") },
             authType = authType.value,
             username = username.value,
             onLoginTextUpdate = { Log.v("AuthScreen", "Login Text Update") },

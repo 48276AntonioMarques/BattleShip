@@ -9,11 +9,6 @@ import okhttp3.*
 import pt.isel.pdm.battleship.common.*
 import java.io.IOException
 
-data class User(val name: String, val token: String)
-fun UserDto.toUser(): User {
-    return User(this.properties!!.name, this.properties.token)
-}
-
 enum class AuthType{ LOGIN, REGISTER }
 
 interface AuthService {

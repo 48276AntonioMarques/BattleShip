@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleship.screen
+package pt.isel.pdm.battleship.lobby
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
@@ -11,35 +11,63 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import pt.isel.pdm.battleship.R
+import pt.isel.pdm.battleship.common.Invite
 import pt.isel.pdm.battleship.ui.TopBar
 import pt.isel.pdm.battleship.ui.theme.BattleShipTheme
 
 @Composable
-fun InvitesScreen() {
+fun InvitesScreen(
+    onBackRequested: () -> Unit,
+    invites: List<Invite>?,
+    isLoading: Boolean,
+    onAccept: (lobbyID: Int) -> Unit,
+    onDodge: (lobbyID: Int) -> Unit
+) {
     BattleShipTheme {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             backgroundColor = MaterialTheme.colors.background,
             topBar = {
-                TopBar(onBackRequested = { Log.v("RankingScreen", "This is going to get u back. Eventually... ") }) },
+                TopBar(onBackRequested = onBackRequested)
+            }
         ) { innerPadding ->
             Column(
-                verticalArrangement = Arrangement.SpaceAround,
+                verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize(),
             ) {
-                //TODO: Build this table with information fetched from (some yet to come) service
-                Row {
-                    Text(text = "Henrique")
-                    Button(onClick = { /*TODO*/ }) {
-                        Icon(imageVector = Icons.Default.Check, contentDescription = null)
+                if (invites != null) {
+                    if (invites.isNotEmpty()) {
+                        invites.map { invite ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(15.dp)
+                            ){
+                                Text(
+                                    text = invite.senderName,
+                                    modifier = Modifier.padding(5.dp)
+                                )
+                                Button( enabled = !isLoading, onClick = { onAccept(invite.lobbyID) }) {
+                                    Icon(imageVector = Icons.Default.Check, contentDescription = null)
+                                }
+                                Button( enabled = !isLoading, onClick = { onDodge(invite.lobbyID) }) {
+                                    Icon(imageVector = Icons.Default.Close, contentDescription = null)
+                                }
+                            }
+                        }
                     }
-                    Button(onClick = { /*TODO*/ }) {
-                        Icon(imageVector = Icons.Default.Close, contentDescription = null)
+                    else {
+                        Text(text= stringResource(id = R.string.app_invites_none))
                     }
+                }
+                else {
+                    Text(text= stringResource(id = R.string.app_invites_loading))
                 }
             }
         }
@@ -50,6 +78,12 @@ fun InvitesScreen() {
 @Composable
 fun InvitesScreenPreview() {
     BattleShipTheme {
-        InvitesScreen()
+        InvitesScreen(
+            onBackRequested = { Log.v("InviteScreen", "Back Requested") },
+            null,
+            false,
+            onAccept = { Log.v("InviteScreen", "Lobby $it accepted") },
+            onDodge = { Log.v("InviteScreen", "Lobby $it dodged") },
+        )
     }
 }

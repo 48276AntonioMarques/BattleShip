@@ -1,4 +1,4 @@
-package pt.isel.pdm.battleship.screen
+package pt.isel.pdm.battleship.menu
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -24,6 +24,7 @@ import pt.isel.pdm.battleship.ui.theme.BattleShipTheme
 
 @Composable
 fun AuthorScreen(
+    onBackRequested: () -> Unit,
     onSendEmailRequested: () -> Unit
 ) {
     BattleShipTheme {
@@ -31,7 +32,8 @@ fun AuthorScreen(
             modifier = Modifier.fillMaxSize(),
             backgroundColor = MaterialTheme.colors.background,
             topBar = {
-                TopBar(onBackRequested = { Log.v("AuthorScreen", "This is going to get u back. Eventually... ") }) },
+                TopBar(onBackRequested = onBackRequested)
+            },
         ) { innerPadding ->
             Column(
                 verticalArrangement = Arrangement.SpaceAround,
@@ -61,9 +63,12 @@ fun Author(onSendEmailRequested: () -> Unit = { }) {
 @Composable
 fun AuthorScreenPreview() {
     BattleShipTheme {
+        val onBackRequested: () -> Unit = {
+            Log.v("AuthorScreen", "This will take you back.")
+        }
         val onSendEmailRequested: () -> Unit = {
             Log.v("AuthorScreen", "Emailing someone!")
         }
-        AuthorScreen(onSendEmailRequested)
+        AuthorScreen(onBackRequested, onSendEmailRequested)
     }
 }

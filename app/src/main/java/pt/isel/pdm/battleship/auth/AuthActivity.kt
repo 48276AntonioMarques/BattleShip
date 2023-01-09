@@ -1,12 +1,13 @@
 package pt.isel.pdm.battleship.auth
 
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import pt.isel.pdm.battleship.DependenciesContainer
 import pt.isel.pdm.battleship.common.KotlinActivity
-import pt.isel.pdm.battleship.screen.AuthScreen
 import pt.isel.pdm.battleship.service.AuthType
 import pt.isel.pdm.battleship.menu.MenuActivity
 
@@ -18,8 +19,9 @@ class AuthActivity : KotlinActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
             if (avm.user.value != null) {
-                // There is a user logged in so this activity isn't meant to be on display no matter what
+                Log.v("AuthActivity", "${avm.user.value}")
                 MenuActivity.user.value = avm.user.value
                 finish()
             }
@@ -28,6 +30,7 @@ class AuthActivity : KotlinActivity() {
             val authType = rememberSaveable { mutableStateOf(AuthType.LOGIN) }
 
             AuthScreen(
+                onBackRequested = { finish() },
                 authType = authType.value,
                 username = username.value,
                 onLoginTextUpdate = { field -> username.value = field.text },

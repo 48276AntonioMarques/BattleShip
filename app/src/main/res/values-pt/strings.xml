@@ -14,4 +14,8 @@
     <string name="app_auth_io_fail">Falha ao conectar</string>
     <string name="app_auth_unexpected_response_type">Resposta inesperada ao pedido</string>
     <string name="app_auth_null_pointer">Erro a obter utilizador</string>
+    <string name="app_rank_error">Erro ao carregar classificação</string>
+    <string name="app_invites_error">Erro ao carregar convites</string>
+    <string name="app_invites_none">Sem convites</string>
+    <string name="app_invites_loading">A carregar os convites</string>
 </resources>
