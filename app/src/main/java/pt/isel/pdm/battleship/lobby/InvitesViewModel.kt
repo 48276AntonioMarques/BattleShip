@@ -24,15 +24,21 @@ class InvitesViewModel(
     val invites : State<List<Invite>?>
         get() = _invites
 
+    private val _subscribed = mutableStateOf(false)
+
     private val _isLoading = mutableStateOf(false)
     val isLoading: State<Boolean>
         get() = _isLoading
+
+    private val _accepted = mutableStateOf<Int?>(null)
+    val accepted: State<Int?>
+        get() = _accepted
 
     fun setCredentials(user: User) {
         this.user.value = user
     }
 
-    fun fetchInvites(context: Context) {
+    fun subscribeInvitesList(context: Context) {
         viewModelScope.launch {
             try {
                 _isLoading.value = true
@@ -53,6 +59,7 @@ class InvitesViewModel(
             try {
                 _isLoading.value = true
                 lobbyService.accept(user.value!!, inviteID)
+                _accepted.value = inviteID
             }
             catch (e: Exception) {
                 Log.e("InvitesViewModel", "${e.message}")
@@ -64,11 +71,18 @@ class InvitesViewModel(
         }
     }
 
+    fun clearState() {
+        _invites.value = null
+        _accepted.value = null
+        _isLoading.value = false
+    }
+
     fun dodge(context: Context, inviteID: Int) {
         viewModelScope.launch {
             try {
                 _isLoading.value = true
-                lobbyService.dodge(user.value!!, inviteID)
+                lobbyService.cancel(user.value!!, inviteID)
+                _invites.value = _invites.value?.filter { l -> l.lobbyID != inviteID }
             }
             catch (e: Exception) {
                 Log.e("InvitesViewModel", "${e.message}")

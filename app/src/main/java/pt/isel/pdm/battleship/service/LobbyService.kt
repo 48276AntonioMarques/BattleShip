@@ -12,7 +12,9 @@ import java.net.URL
 interface LobbyService {
     suspend fun getInvites(user: User): List<Invite>
     suspend fun accept(user: User, inviteID: Int): Boolean
-    suspend fun dodge(user: User, inviteID: Int)
+    suspend fun cancel(user: User, inviteID: Int)
+    suspend fun getLobby(user: User, lobbyID: Int): Lobby
+    suspend fun createLobby(user: User, enemy: String): Lobby
 }
 
 class RealLobbyService(
@@ -65,7 +67,15 @@ class RealLobbyService(
             }
         )
 
-    override suspend fun dodge(user: User, inviteID: Int) {
+    override suspend fun cancel(user: User, inviteID: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getLobby(user: User, lobbyID: Int): Lobby {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun createLobby(user: User, enemy: String): Lobby {
         TODO("Not yet implemented")
     }
 }
@@ -76,10 +86,16 @@ class FakeLobbyService : LobbyService {
             Lobby(3, "Ramiro", "Henrique", LobbyState.AWAITING_OPPONENT),
             Lobby(1, "Mario", "Henrique", LobbyState.CANCELLED)
         ).map { lobby ->
-            lobby.toInvite(User("Henrique", "token abcde1234"))
+            lobby.toInvite(User("Henrique", "token ab1234"))
         }
 
     override suspend fun accept(user: User, inviteID: Int) = inviteID == 3
 
-    override suspend fun dodge(user: User, inviteID: Int) { delay (1000) }
+    override suspend fun cancel(user: User, inviteID: Int) { delay (1000) }
+
+    override suspend fun getLobby(user: User, lobbyID: Int): Lobby =
+        Lobby(lobbyID, user.name, "Mario", LobbyState.AWAITING_OPPONENT)
+
+    override suspend fun createLobby(user: User, enemy: String): Lobby =
+        Lobby(4, user.name, "Mario", LobbyState.AWAITING_OPPONENT)
 }

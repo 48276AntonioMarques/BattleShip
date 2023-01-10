@@ -18,4 +18,17 @@
     <string name="app_invites_error">Erro ao carregar convites</string>
     <string name="app_invites_none">Sem convites</string>
     <string name="app_invites_loading">A carregar os convites</string>
+    <string name="app_lobby_error">Falha ao carregar a sala</string>
+    <string name="app_lobby_loading">A carregar a sala</string>
+    <string name="app_lobby_state_awaiting_opponent">A espera do adversário</string>
+    <string name="app_lobby_state_floating">A preparar a frota</string>
+    <string name="app_lobby_state_user_turn">A tua vez de jogar</string>
+    <string name="app_lobby_state_enemy_turn">A vez do adversário jogar</string>
+    <string name="app_lobby_user_won">Ganhaste</string>
+    <string name="app_lobby_user_lost">Perdeste</string>
+    <string name="app_lobby_user_cancelled">Recusaste</string>
+    <string name="app_lobby_state_enemy_cancelled">Cancelado</string>
+    <string name="app_lobby_cancel">Cancelar</string>
+    <string name="app_lobby_error_cancel">Falha ao cancelar</string>
+    <string name="app_menu_error">Falha ao criar sala</string>
 </resources>

@@ -17,4 +17,17 @@
     <string name="app_invites_error">Unable show invites</string>
     <string name="app_invites_none">No invites</string>
     <string name="app_invites_loading">Loading invites</string>
+    <string name="app_lobby_error">Failed to load lobby</string>
+    <string name="app_lobby_loading">Loading lobby</string>
+    <string name="app_lobby_state_awaiting_opponent">Awating opponent</string>
+    <string name="app_lobby_state_floating">Getting fleet ready</string>
+    <string name="app_lobby_state_user_turn">Your turn to play</string>
+    <string name="app_lobby_state_enemy_turn">Enemy\'s turn to play</string>
+    <string name="app_lobby_user_won">Won</string>
+    <string name="app_lobby_user_lost">Lost</string>
+    <string name="app_lobby_user_cancelled">Dodged</string>
+    <string name="app_lobby_state_enemy_cancelled">Cancelled</string>
+    <string name="app_lobby_cancel">Cancel</string>
+    <string name="app_lobby_error_cancel">Failed to cancel lobby</string>
+    <string name="app_menu_error">Failed to create lobby</string>
 </resources>

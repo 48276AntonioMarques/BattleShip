@@ -1,5 +1,7 @@
 package pt.isel.pdm.battleship.auth
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -15,6 +17,13 @@ class AuthActivity : KotlinActivity() {
 
     private val aus by lazy { (application as DependenciesContainer).authService }
     private val avm by viewModels { AuthViewModel(aus) }
+
+    companion object {
+        fun navigate(origin: Context) {
+            val intent = Intent(origin, AuthActivity::class.java)
+            origin.startActivity(intent)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

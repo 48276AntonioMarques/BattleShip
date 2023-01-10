@@ -28,7 +28,7 @@ fun MenuScreen(
     onChallengeUpdate: (TextFieldValue) -> Unit,
     receiver: String,
     user: User?,
-    invitesCount: Int
+    onLogoutRequested: () -> Unit
 ) {
 
     fun isLogged() = user != null
@@ -71,7 +71,12 @@ fun MenuScreen(
                             Button (
                                 onClick = onInvitesRequested
                             ) {
-                                Text("See Invites ($invitesCount)")
+                                Text("See Invites")
+                            }
+                            Button (
+                                onClick = onLogoutRequested
+                            ) {
+                                Text("Logout")
                             }
                         }
                         else {
@@ -112,7 +117,7 @@ fun MenuScreenPreview() {
             onChallengeUpdate = { field -> receiver.value = field.text },
             receiver = receiver.value,
             null,
-            0
+            onLogoutRequested = { Log.v("Menu", "Logout Requested!") }
         )
     }
 }
@@ -132,27 +137,7 @@ fun LoggedUserMenuScreenPreview() {
             onChallengeUpdate = { field -> receiver.value = field.text },
             receiver = receiver.value,
             user,
-            0
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LoggedUserMenuScreenWithInvitesPreview() {
-    BattleShipTheme {
-        val user = User("Henrique", "Bearer 1234fg")
-        val receiver = remember { mutableStateOf("") }
-        MenuScreen(
-            onRankingRequested = { Log.v("Menu", "Ranking Requested!") },
-            onAuthorRequested = { Log.v("Menu", "Author Requested!") },
-            onAuthRequested = { Log.v("Menu", "Auth Requested!") },
-            onInvitesRequested = { Log.v("Menu", "Invites Requested!") },
-            onChallengeRequested = { Log.v("Menu", "Challenge Requested!") },
-            onChallengeUpdate = { field -> receiver.value = field.text },
-            receiver = receiver.value,
-            user,
-            (1..99).random()
+            onLogoutRequested = { Log.v("Menu", "Logout Requested!") }
         )
     }
 }

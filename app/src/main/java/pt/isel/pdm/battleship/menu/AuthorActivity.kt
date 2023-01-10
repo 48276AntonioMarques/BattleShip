@@ -1,6 +1,7 @@
 package pt.isel.pdm.battleship.menu
 
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,8 +10,17 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import pt.isel.pdm.battleship.R
+import pt.isel.pdm.battleship.auth.AuthActivity
 
 class AuthorActivity : ComponentActivity() {
+
+    companion object {
+        fun navigate(origin: Context) {
+            val intent = Intent(origin, AuthorActivity::class.java)
+            origin.startActivity(intent)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
