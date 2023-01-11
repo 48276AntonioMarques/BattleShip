@@ -1,9 +1,7 @@
 package pt.isel.pdm.battleship.common
 
 import android.os.Parcelable
-import android.util.Log
 import com.google.gson.*
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.parcel.Parcelize
 import pt.isel.pdm.battleship.service.Game
 import java.lang.reflect.Type
@@ -32,7 +30,6 @@ data class LeaderboardDtoProperties(val fields: List<String>, val ranks: List<Ra
 typealias LeaderboardDto = SirenEntity<LeaderboardDtoProperties>
 val LeaderboardDtoType = SirenEntity.getType<LeaderboardDtoProperties>()
 fun LeaderboardDto.toLeaderboard(): Leaderboard {
-    Log.e("DTOs", "${this.properties == null} ${this.properties?.fields}")
     return Leaderboard(this.properties!!.fields, this.properties.ranks.map { rank -> rank.toRank() })
 }
 
@@ -71,13 +68,13 @@ enum class LobbyState {AWAITING_OPPONENT, FLOATING, USER1_TURN, USER2_TURN, WON,
 data class Lobby(val id: Int, val user1: String, val user2: String, val state: LobbyState)
 fun Lobby.toInvite(receiver: User) = Invite(id, if (user1 == receiver.name) user2 else user1)
 
-data class GameDtoProperties(val id: Int, val user1: String, val user2: String, val state: String)
+data class GameDtoProperties(val id: Int, val player1: String, val player2: String, val state: String)
 typealias GameDto = SirenEntity<GameDtoProperties>
 val GameDtoType = SirenEntity.getType<GameDtoProperties>()
 fun GameDto.toGame(user: User): Game =
     Game(
         properties!!.id,
-        if (user.name == properties.user1) properties.user1 else properties.user2,
-        if (user.name == properties.user1) properties.user2 else properties.user1,
+        if (user.name == properties.player1) properties.player1 else properties.player2,
+        if (user.name == properties.player1) properties.player2 else properties.player1,
         LobbyState.valueOf(properties.state)
     )
