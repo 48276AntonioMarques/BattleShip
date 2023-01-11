@@ -29,12 +29,12 @@ val RankDtoType = object : TypeToken<RankDto>() { }
 fun RankDto.toRank() = Rank(rank, username, games, winRate)
 
 data class Leaderboard(val fields: List<String>, val ranks: List<Rank>)
-data class LeaderboardDtoProperties(val fields: List<String>)
+data class LeaderboardDtoProperties(val fields: List<String>, val ranks: List<RankDto>)
 typealias LeaderboardDto = SirenEntity<LeaderboardDtoProperties>
-val LeaderboardDtoType = SirenEntity.getType<LeaderboardDto>()
+val LeaderboardDtoType = SirenEntity.getType<LeaderboardDtoProperties>()
 fun LeaderboardDto.toLeaderboard(): Leaderboard {
     Log.e("DTOs", "${this.properties == null} ${this.properties?.fields}")
-    return Leaderboard(this.properties!!.fields, listOf())
+    return Leaderboard(this.properties!!.fields, this.properties.ranks.map { rank -> rank.toRank() })
 }
 
 class RankDtoDeserializer(private val propertiesType: Type) : JsonDeserializer<RankDto> {
@@ -44,11 +44,12 @@ class RankDtoDeserializer(private val propertiesType: Type) : JsonDeserializer<R
         typeOfT: Type,
         context: JsonDeserializationContext
     ): RankDto {
+        // Log.e("DTOs", "${json.asJsonPrimitive}")
         return RankDto(
-            json.asJsonObject.getAsJsonObject("rank").asInt,
-            json.asJsonObject.getAsJsonObject("username").asString,
-            json.asJsonObject.getAsJsonObject("games").asInt,
-            json.asJsonObject.getAsJsonObject("winRate").asFloat
+            json.asJsonObject.getAsJsonPrimitive("rank").asInt,
+            json.asJsonObject.getAsJsonPrimitive("username").asString,
+            json.asJsonObject.getAsJsonPrimitive("games").asInt,
+            json.asJsonObject.getAsJsonPrimitive("winRate").asFloat
         )
 /*
         val entity = json.asJsonObject

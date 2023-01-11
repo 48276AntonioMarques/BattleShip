@@ -34,7 +34,6 @@ class RankingViewModel(
             catch (e: Exception) {
                 Log.e("RankingViewModel", "${e.message}\n${e.localizedMessage}")
                 Toast.makeText(context, context.getString(R.string.app_rank_error), Toast.LENGTH_LONG).show()
-                throw e
             }
             finally {
                 _isLoading.value = false

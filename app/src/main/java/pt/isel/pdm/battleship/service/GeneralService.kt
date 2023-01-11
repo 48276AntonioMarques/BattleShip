@@ -32,12 +32,13 @@ class RealGeneralService(
                 )
             },
             onResponse = { response ->
-                Log.v("GeneralService", "success: ${response.isSuccessful}, type: ${response.body?.contentType()}")
                 validateResponse(response) ?: throw UnexpectedResponseTypeException("Invalid Response")
                 try {
                     val body = response.body?.string()
-                    Log.v("GeneralService", body?:"")
-                    Leaderboard(emptyList(), emptyList())
+                    jsonFormatter.fromJson<LeaderboardDto>(
+                        body,
+                        LeaderboardDtoType.type
+                    ).toLeaderboard()
                 } catch (e: JsonSyntaxException) {
                     throw UnexpectedResponseTypeException("Generating JSON: ${e.message}")
                 }

@@ -1,5 +1,6 @@
 package pt.isel.pdm.battleship.common
 
+import android.util.Log
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
@@ -123,13 +124,14 @@ class SubEntityDeserializer<T>(private val propertiesType: Type) : JsonDeseriali
                 entity.getAsJsonObject(entityPropertiesMember),
                 propertiesType
             )
+            Log.e("DTOs", entity.toString())
             EmbeddedEntity(
                 rel = entity.getAsListOfString("rel") ?: emptyList(),
-                clazz = entity.getAsListOfString("class"),
+                clazz = entity.getAsListOfString("class") ?: emptyList(),
                 properties = item,
-                links = entity.getAsListOf("links", SirenLink::class.java, context),
-                actions = entity.getAsListOf("actions", SirenAction::class.java, context),
-                title = entity.get("title")?.asString
+                links = entity.getAsListOf("links", SirenLink::class.java, context) ?: emptyList(),
+                actions = entity.getAsListOf("actions", SirenAction::class.java, context) ?: emptyList(),
+                title = entity.getAsString("title") ?: ""
             )
         }
         else {
@@ -139,6 +141,7 @@ class SubEntityDeserializer<T>(private val propertiesType: Type) : JsonDeseriali
 }
 
 private fun JsonObject.getAsListOfString(propertyName: String): List<String>? =
+    if (!has(propertyName) || !isJsonArray) null else
     getAsJsonArray(propertyName)?.map { it.asString }
 
 private fun <T> JsonObject.getAsListOf(
@@ -146,6 +149,10 @@ private fun <T> JsonObject.getAsListOf(
     type: Class<T>,
     context: JsonDeserializationContext
 ): List<T>? =
-    getAsJsonArray(propertyName)?.map {
+    if (!has(propertyName) || !isJsonArray) null else
+     getAsJsonArray(propertyName)?.map {
         context.deserialize<T>(it, type)
     }
+
+private fun JsonObject.getAsString(propertyName: String): String? =
+    if (!has(propertyName) || !isJsonPrimitive) null else asString

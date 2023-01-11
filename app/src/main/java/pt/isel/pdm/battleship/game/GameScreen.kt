@@ -16,7 +16,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import pt.isel.pdm.battleship.R
 import pt.isel.pdm.battleship.common.LobbyState
 import pt.isel.pdm.battleship.service.Game
-import pt.isel.pdm.battleship.ui.TopBar
 import pt.isel.pdm.battleship.ui.theme.BattleShipTheme
 
 @Composable
