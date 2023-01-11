@@ -9,6 +9,7 @@ interface DependenciesContainer {
     val generalService: GeneralService
     val authService: AuthService
     val lobbyService: LobbyService
+    val gameService: GameService
 }
 private const val api = "https://5d4a-194-210-198-67.eu.ngrok.io/"
 
@@ -40,4 +41,10 @@ class BattleShipApplication : DependenciesContainer, Application() {
             jsonFormatter = gson,
             lobbiesURL = URL(api + "lobbies/")
         )*/FakeLobbyService()
+
+    override val gameService: GameService
+        get() = /*RealGameService(
+            client = client,
+            jsonFormatter = gson
+        )*/FakeGameService()
 }

@@ -94,7 +94,7 @@ class FakeLobbyService : LobbyService {
     override suspend fun cancel(user: User, inviteID: Int) { delay (1000) }
 
     override suspend fun getLobby(user: User, lobbyID: Int): Lobby =
-        Lobby(lobbyID, user.name, "Mario", LobbyState.AWAITING_OPPONENT)
+        Lobby(lobbyID, user.name, "Mario", LobbyState.FLOATING)
 
     override suspend fun createLobby(user: User, enemy: String): Lobby =
         Lobby(4, user.name, "Mario", LobbyState.AWAITING_OPPONENT)

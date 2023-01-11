@@ -43,7 +43,10 @@ class LobbyActivity : KotlinActivity() {
             lvm.subscribeState(this, user!!, lobbyID)
         }
 
+        Log.v("LobbyActivity", "${lvm.lobby.value?.state}")
+
         if (lvm.lobby.value != null && lvm.lobby.value!!.isGoing()) {
+            Log.v("LobbyActivity", "Loading Game")
             lvm.clearState()
             GameActivity.navigate(this, user!!, lobbyID)
         }

@@ -31,4 +31,8 @@
     <string name="app_lobby_cancel">Cancelar</string>
     <string name="app_lobby_error_cancel">Falha ao cancelar</string>
     <string name="app_menu_error">Falha ao criar sala</string>
+    <string name="app_game_error">Falha ao atualizar o jogo</string>
+    <string name="app_game_loading">A carregar o jogo</string>
+    <string name="app_game_turn_player">A tua vez de jogar</string>
+    <string name="app_game_turn_enemy">A vez do adversário jogar</string>
 </resources>

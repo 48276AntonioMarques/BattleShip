@@ -30,4 +30,8 @@
     <string name="app_lobby_cancel">Cancel</string>
     <string name="app_lobby_error_cancel">Failed to cancel lobby</string>
     <string name="app_menu_error">Failed to create lobby</string>
+    <string name="app_game_error">Failed to update game</string>
+    <string name="app_game_loading">Loading game</string>
+    <string name="app_game_turn_player">Your Turn</string>
+    <string name="app_game_turn_enemy">Enemy\'s turn</string>
 </resources>
