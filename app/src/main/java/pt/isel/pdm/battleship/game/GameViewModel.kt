@@ -37,6 +37,7 @@ class GameViewModel(
                     Log.v("GameViewModel", "${e.message}")
                     val message = context.getString(R.string.app_game_error)
                     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                    throw e
                 }
                 delay(UPDATE_TIME.toLong())
             }
