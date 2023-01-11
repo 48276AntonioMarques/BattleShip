@@ -47,5 +47,10 @@ fun validateResponse(response: Response): Response? {
 fun Request.Builder.createGet(url: String) = url(url)
 fun Request.Builder.createPost(url: String, body: String?, mediaType: MediaType) = apply {
     url(url)
-    method("POST", body?.toRequestBody(mediaType))
+    method("POST", body?.toRequestBody(mediaType)?: "".toRequestBody(mediaType))
 }
+fun Request.Builder.createDelete(url: String, body: String?, mediaType: MediaType) = apply {
+    url(url)
+    method("DELETE", body?.toRequestBody(mediaType))
+}
+fun Request.Builder.authenticate(authorization: String) = addHeader("Authorization", authorization)

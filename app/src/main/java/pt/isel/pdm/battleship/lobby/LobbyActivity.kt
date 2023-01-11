@@ -37,21 +37,17 @@ class LobbyActivity : KotlinActivity() {
             return
         }
 
-        Log.v("LobbyActivity", "${user?.name} on lobby $lobbyID")
-
         if (lvm.lobby.value == null) {
             lvm.subscribeState(this, user!!, lobbyID)
         }
 
-        Log.v("LobbyActivity", "${lvm.lobby.value?.state}")
-
-        if (lvm.lobby.value != null && lvm.lobby.value!!.isGoing()) {
-            Log.v("LobbyActivity", "Loading Game")
-            lvm.clearState()
-            GameActivity.navigate(this, user!!, lobbyID)
-        }
-
         setContent {
+            if (lvm.lobby.value != null && lvm.lobby.value!!.isGoing()) {
+                Log.v("LobbyActivity", "Loading Game")
+                lvm.clearState()
+                GameActivity.navigate(this, user!!, lobbyID)
+            }
+            val canGoBack = lvm.lobby.value != null && lvm.lobby.value!!.isFinished()
             if (lvm.shouldLeave.value) { finish() }
             val lobby = lvm.lobby
             val isPlayer1 = user!!.name == lobby.value?.user1
@@ -59,6 +55,7 @@ class LobbyActivity : KotlinActivity() {
                 onBackRequested = { finish() },
                 lobby.value,
                 isPlayer1,
+                canGoBack = canGoBack,
                 onCancelRequested = { cancel(user!!, isPlayer1) }
             )
         }
@@ -75,6 +72,15 @@ class LobbyActivity : KotlinActivity() {
             LobbyState.FLOATING -> true
             LobbyState.USER1_TURN -> true
             LobbyState.USER2_TURN -> true
+            else -> false
+        }
+
+    private fun Lobby.isFinished() =
+        when (state) {
+            LobbyState.WON -> true
+            LobbyState.LOST -> true
+            LobbyState.CANCELLED -> true
+            LobbyState.DODGED -> true
             else -> false
         }
 }

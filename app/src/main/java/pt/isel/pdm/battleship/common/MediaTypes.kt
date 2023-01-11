@@ -110,13 +110,11 @@ data class EmbeddedEntity<T>(
  * Gson deserializer for the SubEntity sum type
  */
 class SubEntityDeserializer<T>(private val propertiesType: Type) : JsonDeserializer<SubEntity> {
-
     override fun deserialize(
         json: JsonElement,
         typeOfT: Type,
         context: JsonDeserializationContext
     ): SubEntity {
-
         val entity = json.asJsonObject
         val entityPropertiesMember = "properties"
         return if (entity.has(entityPropertiesMember)) {

@@ -26,6 +26,7 @@ fun LobbyScreen(
     onBackRequested: () -> Unit,
     lobby: Lobby?,
     isPlayer1: Boolean,
+    canGoBack: Boolean,
     onCancelRequested: () -> Unit
 ) {
 
@@ -34,7 +35,7 @@ fun LobbyScreen(
             modifier = Modifier.fillMaxSize(),
             backgroundColor = MaterialTheme.colors.background,
             topBar = {
-                TopBar(onBackRequested = onBackRequested)
+                if (canGoBack) TopBar(onBackRequested = onBackRequested)
             },
         ) { innerPadding ->
             Column(
@@ -69,8 +70,10 @@ fun LobbyScreen(
                             DODGED -> if (isPlayer1) enemyCancelled else playerCancelled
                         }
                     Text(text = state)
-                    Button(onClick = onCancelRequested) {
-                        Text(text = stringResource(id = R.string.app_lobby_cancel))
+                    if (isPlayer1) {
+                        Button(onClick = onCancelRequested) {
+                            Text(text = stringResource(id = R.string.app_lobby_cancel))
+                        }
                     }
                 }
             }
@@ -86,6 +89,7 @@ fun LoadingLobbyScreenPreview() {
             onBackRequested = { Log.v("LobbyScreen", "Back requested") },
             null,
             true,
+            false,
             { Log.v("LobbyScreen", "Cancel!") }
         )
     }
@@ -101,6 +105,7 @@ fun RandomCombinationLobbyScreenPreview() {
             onBackRequested = { Log.v("LobbyScreen", "Back requested") },
             Lobby(1, "Henrique", "Mario", randomState),
             randomPlayer,
+            false,
             { Log.v("LobbyScreen", "Cancel!") }
         )
     }

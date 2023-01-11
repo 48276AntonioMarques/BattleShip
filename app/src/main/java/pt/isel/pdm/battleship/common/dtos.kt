@@ -22,10 +22,8 @@ typealias UserDto = SirenEntity<UserDtoProperties>
 val UserDtoType = SirenEntity.getType<UserDtoProperties>()
 fun UserDto.toUser(): User = User(this.properties!!.name, this.properties.token)
 
-//FIXME: Gson crashes trying to parse this :'(
 data class Rank(val rank: Int, val username: String, val games: Int, val winRate: Float)
 data class RankDto(val rank: Int, val username: String, val games: Int, val winRate: Float)
-val RankDtoType = object : TypeToken<RankDto>() { }
 fun RankDto.toRank() = Rank(rank, username, games, winRate)
 
 data class Leaderboard(val fields: List<String>, val ranks: List<Rank>)
@@ -37,46 +35,37 @@ fun LeaderboardDto.toLeaderboard(): Leaderboard {
     return Leaderboard(this.properties!!.fields, this.properties.ranks.map { rank -> rank.toRank() })
 }
 
-class RankDtoDeserializer(private val propertiesType: Type) : JsonDeserializer<RankDto> {
-
+class RankDtoDeserializer : JsonDeserializer<RankDto> {
     override fun deserialize(
         json: JsonElement,
         typeOfT: Type,
         context: JsonDeserializationContext
     ): RankDto {
-        // Log.e("DTOs", "${json.asJsonPrimitive}")
         return RankDto(
             json.asJsonObject.getAsJsonPrimitive("rank").asInt,
             json.asJsonObject.getAsJsonPrimitive("username").asString,
             json.asJsonObject.getAsJsonPrimitive("games").asInt,
             json.asJsonObject.getAsJsonPrimitive("winRate").asFloat
         )
-/*
-        val entity = json.asJsonObject
-        val entityPropertiesMember = "properties"
-        return if (entity.has(entityPropertiesMember)) {
-            val item = context.deserialize<T>(
-                entity.getAsJsonObject(entityPropertiesMember),
-                propertiesType
-            )
-            EmbeddedEntity(
-                rel = entity.getAsListOfString("rel") ?: emptyList(),
-                clazz = entity.getAsListOfString("class"),
-                properties = item,
-                links = entity.getAsListOf("links", SirenLink::class.java, context),
-                actions = entity.getAsListOf("actions", SirenAction::class.java, context),
-                title = entity.get("title")?.asString
-            )
-        }
-        else {
-            context.deserialize(entity, EmbeddedLink::class.java)
-        }*/
     }
 }
 
+data class Invite(val lobbyID: Int, val senderName: String)
+data class InvitesListDtoProperties(val invites: List<LobbyDto>)
+typealias InvitesListDto = SirenEntity<InvitesListDtoProperties>
+val InvitesListDtoType = SirenEntity.getType<InvitesListDtoProperties>()
+fun InvitesListDto.toInvitesList(user: User) =
+    entities?.mapNotNull { entity ->
+        (entity as EmbeddedEntity<LobbyDto>).properties?.toLobby()?.toInvite(user)
+    } ?: emptyList()
+
+typealias LobbyDtoEntity = SirenEntity<LobbyDto>
+val LobbyDtoType = SirenEntity.getType<LobbyDto>()
+fun LobbyDtoEntity.toLobby() = properties!!.toLobby()
+
+data class UserNameDto(val name: String)
+data class LobbyDto(val id: Int, val user1: UserNameDto, val user2: UserNameDto, val state: String)
+fun LobbyDto.toLobby() = Lobby(id, user1.name, user2.name, LobbyState.valueOf(state))
 enum class LobbyState {AWAITING_OPPONENT, FLOATING, USER1_TURN, USER2_TURN, WON, LOST, CANCELLED, DODGED}
 data class Lobby(val id: Int, val user1: String, val user2: String, val state: LobbyState)
-
-data class Invite(val lobbyID: Int, val senderName: String)
-
 fun Lobby.toInvite(receiver: User) = Invite(id, if (user1 == receiver.name) user2 else user1)

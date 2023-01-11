@@ -43,6 +43,7 @@ class InvitesViewModel(
                     Log.v("InvitesViewModel", "Fetching invitesList")
                     _isLoading.value = true
                     _invites.value = lobbyService.getInvites(user)
+                    Log.v("InvitesViewModel", "${_invites.value?.size}")
                 }
                 catch (e: Exception) {
                     Log.e("InvitesViewModel", "${e.message}")
@@ -66,6 +67,7 @@ class InvitesViewModel(
             catch (e: Exception) {
                 Log.e("InvitesViewModel", "${e.message}")
                 Toast.makeText(context, context.getString(R.string.app_invites_error), Toast.LENGTH_LONG).show()
+                throw e
             }
             finally {
                 _isLoading.value = false
@@ -89,6 +91,7 @@ class InvitesViewModel(
             catch (e: Exception) {
                 Log.e("InvitesViewModel", "${e.message}")
                 Toast.makeText(context, context.getString(R.string.app_invites_error), Toast.LENGTH_LONG).show()
+                throw e
             }
             finally {
                 _isLoading.value = false

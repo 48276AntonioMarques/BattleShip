@@ -21,6 +21,8 @@ class RealLobbyService(
     private val client: OkHttpClient,
     private val jsonFormatter: Gson,
     private val lobbiesURL: URL,
+    private val createURL: URL,
+    private val lobbyURL: URL
 ) : LobbyService {
 
     @Throws(IOException::class, UnexpectedResponseTypeException::class)
@@ -28,56 +30,98 @@ class RealLobbyService(
         api(
             client = client,
             requestBuilder = {
-                createGet(url = lobbiesURL.toExternalForm())
+                createGet(url = lobbiesURL.toExternalForm()).authenticate("Bearer ${user.token}")
             },
             onResponse = { response ->
-                Log.v("GeneralService", "success: ${response.isSuccessful}, type: ${response.body?.contentType()}")
                 validateResponse(response) ?: throw UnexpectedResponseTypeException("Invalid Response")
                 try {
                     val body = response.body?.string()
-                    Log.v("GeneralService", body?:"")
-                    emptyList()
+                    jsonFormatter.fromJson<InvitesListDto>(
+                        body,
+                        InvitesListDtoType.type
+                    ).toInvitesList(user)
                 } catch (e: JsonSyntaxException) {
                     throw UnexpectedResponseTypeException("Generating JSON: ${e.message}")
                 }
             }
         )
 
-    override suspend fun accept(user: User,inviteID: Int): Boolean =
+    override suspend fun accept(user: User, inviteID: Int): Boolean =
         api(
             client = client,
             requestBuilder = {
-                Log.v("LobbyService", user.token)
                 createPost(
-                    url = lobbiesURL.toExternalForm(),
-                    body = "",
+                    url = getLobbyURL(inviteID),
+                    body = null,
                     mediaType = JsonMediaType
-                ).addHeader("Authorization", "Bearer ${user.token}")
+                ).authenticate("Bearer ${user.token}")
             },
             onResponse = { response ->
-                Log.v("GeneralService", "success: ${response.isSuccessful}, type: ${response.body?.contentType()}")
-                validateResponse(response) ?: throw UnexpectedResponseTypeException("Invalid Response")
-                try {
-                    val body = response.body?.string()
-                    Log.v("GeneralService", body?:"")
-                    true
-                } catch (e: JsonSyntaxException) {
-                    throw UnexpectedResponseTypeException("Generating JSON: ${e.message}")
-                }
+                validateResponse(response) != null
             }
         )
 
     override suspend fun cancel(user: User, inviteID: Int) {
-        TODO("Not yet implemented")
+        api(
+            client = client,
+            requestBuilder = {
+                createDelete(
+                    url = getLobbyURL(inviteID),
+                    body = null,
+                    mediaType = JsonMediaType
+                ).authenticate("Bearer ${user.token}")
+            },
+            onResponse = { response ->
+                validateResponse(response) ?: throw UnexpectedResponseTypeException("Unable to cancel")
+            }
+        )
     }
 
-    override suspend fun getLobby(user: User, lobbyID: Int): Lobby {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getLobby(user: User, lobbyID: Int): Lobby =
+        api(
+        client = client,
+        requestBuilder = {
+            createGet(url = getLobbyURL(lobbyID)).authenticate("Bearer ${user.token}")
+        },
+        onResponse = { response ->
+            validateResponse(response) ?: throw UnexpectedResponseTypeException("Invalid Response")
+            try {
+                val body = response.body?.string()
+                jsonFormatter.fromJson<LobbyDtoEntity>(
+                    body,
+                    LobbyDtoType.type
+                ).toLobby()
+            } catch (e: JsonSyntaxException) {
+                throw UnexpectedResponseTypeException("Generating JSON: ${e.message}")
+            }
+        }
+        )
 
-    override suspend fun createLobby(user: User, enemy: String): Lobby {
-        TODO("Not yet implemented")
-    }
+    override suspend fun createLobby(user: User, enemy: String): Lobby =
+        api(
+            client = client,
+            requestBuilder = {
+                createPost(
+                    url = createURL.toExternalForm(),
+                    body = "{\"name\":\"${enemy}\"}",
+                    mediaType = JsonMediaType
+                ).authenticate("Bearer ${user.token}")
+            },
+            onResponse = { response ->
+                validateResponse(response) ?: throw UnexpectedResponseTypeException("Invalid Response")
+                try {
+                    val body = response.body?.string()
+                    jsonFormatter.fromJson<LobbyDtoEntity>(
+                        body,
+                        LobbyDtoType.type
+                    ).toLobby()
+                } catch (e: JsonSyntaxException) {
+                    throw UnexpectedResponseTypeException("Generating JSON: ${e.message}")
+                }
+            }
+        )
+
+    private fun getLobbyURL(id: Int): String = lobbyURL.toExternalForm() + "$id"
 }
 
 class FakeLobbyService : LobbyService {

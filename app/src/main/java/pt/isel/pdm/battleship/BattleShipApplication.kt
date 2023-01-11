@@ -13,7 +13,7 @@ interface DependenciesContainer {
     val lobbyService: LobbyService
     val gameService: GameService
 }
-private const val api = "https://6f2e-194-210-198-67.eu.ngrok.io/"
+private const val api = "https://c5c8-194-210-198-67.eu.ngrok.io/"
 
 class BattleShipApplication : DependenciesContainer, Application() {
     private val client by lazy { OkHttpClient()}
@@ -24,7 +24,11 @@ class BattleShipApplication : DependenciesContainer, Application() {
                 SubEntity::class.java,
                 SubEntityDeserializer<RankDto>(RankDto::class.java)
             )
-            .registerTypeAdapter(RankDto::class.java, RankDtoDeserializer(RankDto::class.java))
+            .registerTypeHierarchyAdapter(
+                SubEntity::class.java,
+                SubEntityDeserializer<LobbyDto>(LobbyDto::class.java)
+            )
+            .registerTypeHierarchyAdapter(RankDto::class.java, RankDtoDeserializer())
             .create()
     }
 
@@ -36,19 +40,22 @@ class BattleShipApplication : DependenciesContainer, Application() {
         )//FakeGeneralService()
 
     override val authService: AuthService
-        get() = /*RealAuthService(
+        get() = RealAuthService(
             client = client,
             jsonFormatter = gson,
             registerURL = URL(api + "users/"),
             loginURL = URL(api + "users/login/")
-        )*/FakeAuthService()
+        )//FakeAuthService()
 
     override val lobbyService: LobbyService
-        get() = /*RealLobbyService(
+        get() = RealLobbyService(
             client = client,
             jsonFormatter = gson,
-            lobbiesURL = URL(api + "lobbies/")
-        )*/FakeLobbyService()
+            lobbiesURL = URL(api + "lobbies/"),
+            createURL = URL(api + "lobbies/create/"),
+            lobbyURL = URL(api + "lobbies/"),
+
+        )//FakeLobbyService()
 
     override val gameService: GameService
         get() = /*RealGameService(

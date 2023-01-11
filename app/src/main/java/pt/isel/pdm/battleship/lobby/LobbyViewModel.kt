@@ -65,6 +65,6 @@ class LobbyViewModel(
     fun clearState() {
         _subscribed.value = false
         _lobby.value = null
-        _shouldLeave.value = false
+        _shouldLeave.value = true
     }
 }
