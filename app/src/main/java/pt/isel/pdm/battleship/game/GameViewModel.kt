@@ -31,7 +31,7 @@ class GameViewModel(
         _subscribed.value = true
             while (_subscribed.value) {
                 try {
-                    _game.value = gameService.getState()
+                    _game.value = gameService.getState(user)
                 }
                 catch (e: Exception) {
                     Log.v("GameViewModel", "${e.message}")

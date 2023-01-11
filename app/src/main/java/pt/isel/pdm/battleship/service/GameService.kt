@@ -1,11 +1,11 @@
 package pt.isel.pdm.battleship.service
 
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.delay
 import okhttp3.OkHttpClient
-import pt.isel.pdm.battleship.common.Lobby
-import pt.isel.pdm.battleship.common.LobbyState
-import pt.isel.pdm.battleship.common.User
+import pt.isel.pdm.battleship.common.*
+import java.net.URL
 
 data class Game(val id: Int, val player: String, val enemy: String, val state: LobbyState)
 data class Coordinate(val x: Int, val y: Int) {
@@ -32,33 +32,51 @@ data class EnemyFleet(val shots: List<Shot>)
 class OutOfTurnException(message: String): Exception(message)
 
 interface GameService {
-    suspend fun getState(): Game
-    suspend fun submitFleet(fleet: Fleet) : Fleet
-    suspend fun getFleetState(): Fleet
-    suspend fun submitShots(shots: List<Shot>): EnemyFleet
+    suspend fun getState(user: User): Game
+    suspend fun submitFleet(user: User, fleet: Fleet) : Fleet
+    suspend fun getFleetState(user: User): Fleet
+    suspend fun submitShots(user: User, shots: List<Shot>): EnemyFleet
 
 }
 
 class RealGameService(
-    val client: OkHttpClient,
-    val jsonFormatter: Gson
+    private val client: OkHttpClient,
+    private val jsonFormatter: Gson,
+    private val gameURL: URL,
+    private val fleetURL: URL,
+    private val enemyFleetURL: URL
 ): GameService {
-    override suspend fun getState(): Game {
+    override suspend fun getState(user: User): Game =
+        api(
+            client = client,
+            requestBuilder = {
+                createGet(url = gameURL.toExternalForm()).authenticate("Bearer ${user.token}")
+            },
+            onResponse = { response ->
+                validateResponse(response) ?: throw UnexpectedResponseTypeException("Invalid Response")
+                try {
+                    val body = response.body?.string()
+                    jsonFormatter.fromJson<GameDto>(
+                        body,
+                        GameDtoType.type
+                    ).toGame(user)
+                } catch (e: JsonSyntaxException) {
+                    throw UnexpectedResponseTypeException("Generating JSON: ${e.message}")
+                }
+            }
+        )
+
+    override suspend fun submitFleet(user: User, fleet: Fleet): Fleet {
         TODO("Not yet implemented")
     }
 
-    override suspend fun submitFleet(fleet: Fleet): Fleet {
+    override suspend fun getFleetState(user: User): Fleet {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getFleetState(): Fleet {
+    override suspend fun submitShots(user: User, shots: List<Shot>): EnemyFleet {
         TODO("Not yet implemented")
     }
-
-    override suspend fun submitShots(shots: List<Shot>): EnemyFleet {
-        TODO("Not yet implemented")
-    }
-
 }
 
 class FakeGameService: GameService {
@@ -68,12 +86,12 @@ class FakeGameService: GameService {
     var fleet = Fleet(emptyList(), emptyList())
     var enemyFleet = Fleet(emptyList(), emptyList())
 
-    override suspend fun getState(): Game {
+    override suspend fun getState(user: User): Game {
         delay(500)
         return game
     }
 
-    override suspend fun submitFleet(fleet: Fleet): Fleet {
+    override suspend fun submitFleet(user: User, fleet: Fleet): Fleet {
         this.fleet = fleet
         if (enemyFleet.ships.isNotEmpty() && fleet.ships.isNotEmpty()) {
             game = Game(lobby.id, lobby.user1, lobby.user2, LobbyState.USER1_TURN)
@@ -82,12 +100,12 @@ class FakeGameService: GameService {
         return fleet
     }
 
-    override suspend fun getFleetState(): Fleet {
+    override suspend fun getFleetState(user: User): Fleet {
         delay(500)
         return fleet
     }
 
-    override suspend fun submitShots(shots: List<Shot>): EnemyFleet {
+    override suspend fun submitShots(user: User, shots: List<Shot>): EnemyFleet {
         if (game.state != LobbyState.USER1_TURN) throw OutOfTurnException("Is not your turn to play")
         val hits: List<Shot> = shots.flatMap { shot ->
             enemyFleet.ships.flatMap { ship ->

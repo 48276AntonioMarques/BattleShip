@@ -5,6 +5,7 @@ import android.util.Log
 import com.google.gson.*
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.parcel.Parcelize
+import pt.isel.pdm.battleship.service.Game
 import java.lang.reflect.Type
 
 @Parcelize
@@ -69,3 +70,14 @@ fun LobbyDto.toLobby() = Lobby(id, user1.name, user2.name, LobbyState.valueOf(st
 enum class LobbyState {AWAITING_OPPONENT, FLOATING, USER1_TURN, USER2_TURN, WON, LOST, CANCELLED, DODGED}
 data class Lobby(val id: Int, val user1: String, val user2: String, val state: LobbyState)
 fun Lobby.toInvite(receiver: User) = Invite(id, if (user1 == receiver.name) user2 else user1)
+
+data class GameDtoProperties(val id: Int, val player: String, val enemy: String, val state: String)
+typealias GameDto = SirenEntity<GameDtoProperties>
+val GameDtoType = SirenEntity.getType<GameDtoProperties>()
+fun GameDto.toGame(user: User): Game =
+    Game(
+        properties!!.id,
+        if (user.name == properties.player) properties.player else properties.enemy,
+        if (user.name == properties.player) properties.enemy else properties.player,
+        LobbyState.valueOf(properties.state)
+    )
