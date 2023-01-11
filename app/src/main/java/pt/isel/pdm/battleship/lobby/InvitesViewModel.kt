@@ -76,6 +76,7 @@ class InvitesViewModel(
     }
 
     fun clearState() {
+        _subscribed.value = false
         _invites.value = null
         _accepted.value = null
         _isLoading.value = false
