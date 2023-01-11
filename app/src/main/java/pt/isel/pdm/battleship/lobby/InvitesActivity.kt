@@ -14,16 +14,15 @@ class InvitesActivity : KotlinActivity() {
     private val ivm by viewModels { InvitesViewModel(ls) }
 
     companion object {
-        const val USER_EXTRA = "USER_EXTRA"
         fun navigate(origin: Activity, user: User? = null) {
             val intent = Intent(origin, InvitesActivity::class.java)
-            if (user != null) intent.putExtra(USER_EXTRA, user.toLocalUserDto())
+            if (user != null) intent.putExtra(EXTRAS.USER, user.toLocalUserDto())
             origin.startActivity(intent)
         }
     }
 
     private val user: LocalUserDto?
-        get() = intent.getParcelableExtra(USER_EXTRA)
+        get() = intent.getParcelableExtra(EXTRAS.USER)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +30,7 @@ class InvitesActivity : KotlinActivity() {
         val user = user?.toUser()
         if (user == null) { finish(); return }
 
-        if (ivm.invites.value == null) loadInvites(user)
+        if (ivm.invites.value == null) subscribeInvitesList(user)
         setContent {
             val accepted = ivm.accepted.value
             if (accepted != null) {
@@ -45,8 +44,8 @@ class InvitesActivity : KotlinActivity() {
                 onBackRequested = { finish() },
                 invites = ivm.invites.value,
                 isLoading = ivm.isLoading.value,
-                onAccept = { invite -> ivm.accept(this, invite) },
-                onDodge = {invite -> ivm.dodge(this, invite) }
+                onAccept = { invite -> ivm.accept(this, user, invite) },
+                onDodge = {invite -> ivm.dodge(this, user, invite) }
             )
         }
     }
@@ -57,13 +56,12 @@ class InvitesActivity : KotlinActivity() {
         val user = user?.toUser()
         if (user == null) { finish(); return }
 
-        if (ivm.invites.value == null) loadInvites(user)
+        if (ivm.invites.value == null) subscribeInvitesList(user)
     }
 
-    private fun loadInvites(user: User) {
+    private fun subscribeInvitesList(user: User) {
         if (ivm.invites.value == null) {
-            ivm.setCredentials(user)
-            ivm.subscribeInvitesList(this)
+            ivm.subscribeInvitesList(this, user)
         }
     }
 }

@@ -15,7 +15,7 @@ import pt.isel.pdm.battleship.common.User
 import pt.isel.pdm.battleship.service.LobbyService
 import java.lang.Exception
 
-private const val UPDATE_TIME = 10000
+private const val UPDATE_TIME = 30000 // 30 Seconds
 
 class LobbyViewModel(
     private val lobbyService: LobbyService

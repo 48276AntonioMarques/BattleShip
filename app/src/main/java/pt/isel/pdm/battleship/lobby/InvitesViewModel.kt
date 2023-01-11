@@ -7,6 +7,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import pt.isel.pdm.battleship.R
 import pt.isel.pdm.battleship.common.Invite
@@ -14,11 +15,11 @@ import pt.isel.pdm.battleship.common.User
 import pt.isel.pdm.battleship.service.LobbyService
 import java.lang.Exception
 
+private const val UPDATE_TIME = 30000 // 30 Seconds
+
 class InvitesViewModel(
     private val lobbyService: LobbyService
 ): ViewModel() {
-
-    private val user = mutableStateOf<User?>(null)
 
     private val _invites = mutableStateOf<List<Invite>?>(null)
     val invites : State<List<Invite>?>
@@ -34,31 +35,32 @@ class InvitesViewModel(
     val accepted: State<Int?>
         get() = _accepted
 
-    fun setCredentials(user: User) {
-        this.user.value = user
-    }
-
-    fun subscribeInvitesList(context: Context) {
+    fun subscribeInvitesList(context: Context, user: User) {
         viewModelScope.launch {
-            try {
-                _isLoading.value = true
-                _invites.value = lobbyService.getInvites(user.value!!)
-            }
-            catch (e: Exception) {
-                Log.e("InvitesViewModel", "${e.message}")
-                Toast.makeText(context, context.getString(R.string.app_invites_error), Toast.LENGTH_LONG).show()
-            }
-            finally {
-                _isLoading.value = false
+            _subscribed.value = true
+            while (_subscribed.value) {
+                try {
+                    Log.v("InvitesViewModel", "Fetching invitesList")
+                    _isLoading.value = true
+                    _invites.value = lobbyService.getInvites(user)
+                }
+                catch (e: Exception) {
+                    Log.e("InvitesViewModel", "${e.message}")
+                    Toast.makeText(context, context.getString(R.string.app_invites_error), Toast.LENGTH_LONG).show()
+                }
+                finally {
+                    _isLoading.value = false
+                }
+                delay(UPDATE_TIME.toLong())
             }
         }
     }
 
-    fun accept(context: Context, inviteID: Int) {
+    fun accept(context: Context, user: User, inviteID: Int) {
         viewModelScope.launch {
             try {
                 _isLoading.value = true
-                lobbyService.accept(user.value!!, inviteID)
+                lobbyService.accept(user, inviteID)
                 _accepted.value = inviteID
             }
             catch (e: Exception) {
@@ -77,11 +79,11 @@ class InvitesViewModel(
         _isLoading.value = false
     }
 
-    fun dodge(context: Context, inviteID: Int) {
+    fun dodge(context: Context, user: User, inviteID: Int) {
         viewModelScope.launch {
             try {
                 _isLoading.value = true
-                lobbyService.cancel(user.value!!, inviteID)
+                lobbyService.cancel(user, inviteID)
                 _invites.value = _invites.value?.filter { l -> l.lobbyID != inviteID }
             }
             catch (e: Exception) {
