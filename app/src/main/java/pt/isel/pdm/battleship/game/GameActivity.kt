@@ -11,11 +11,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import pt.isel.pdm.battleship.DependenciesContainer
 import pt.isel.pdm.battleship.common.*
+import pt.isel.pdm.battleship.game.compose.CellState
 import pt.isel.pdm.battleship.lobby.LobbyActivity
-import pt.isel.pdm.battleship.service.Direction
-import pt.isel.pdm.battleship.service.Fleet
-import pt.isel.pdm.battleship.service.Ship
-import pt.isel.pdm.battleship.service.ShipType
+import pt.isel.pdm.battleship.service.*
 
 class GameActivity : KotlinActivity() {
 
@@ -55,25 +53,31 @@ class GameActivity : KotlinActivity() {
         setContent {
             val game = gvm.game.value
             val shipsPlacedCounter = rememberSaveable { mutableStateOf(0) }
-            val shipToPlace = if (shipsPlacedCounter.value < shipsList.size) {
-                shipsList[shipsPlacedCounter.value]
-            }
-            else {
-                null
-            }
+            val shipToPlace = if (shipsPlacedCounter.value < shipsList.size)
+                Ship(
+                    Coordinate(0,0),
+                    Direction.VERTICAL,
+                    shipsList[shipsPlacedCounter.value]
+                )
+            else null
             val shipDirection = remember { mutableStateOf(Direction.VERTICAL) }
             val fleet = remember { mutableStateOf(Fleet(emptyList(), emptyList())) }
             GameScreen(
                 game = game,
                 shipToPlace = shipToPlace,
-                shipDirection = shipDirection.value,
                 rotate = { dir -> shipDirection.value = dir },
-                placeShip = { ship ->
-                    val fv = fleet.value
-                    fleet.value = Fleet(fv.ships + ship, fv.shots)
-                    shipsPlacedCounter.value++
-                },
-                fleet = fleet.value
+                fleet = fleet.value,
+                onCellClick = { location, state ->
+                    Log.v("GameActivity", "Cell clicked")
+                    if (shipToPlace != null) {
+                        if (state == CellState.WATER) {
+                            val fv = fleet.value
+                            val ship = Ship(location, shipDirection.value, shipToPlace.type)
+                            fleet.value = Fleet(fv.ships + ship, fv.shots)
+                            shipsPlacedCounter.value++
+                        }
+                    }
+                }
             )
         }
     }

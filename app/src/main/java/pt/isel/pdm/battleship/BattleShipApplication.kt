@@ -33,36 +33,36 @@ class BattleShipApplication : DependenciesContainer, Application() {
     }
 
     override val generalService: GeneralService
-        get() = RealGeneralService(
+        get() = /*RealGeneralService(
             client = client,
             jsonFormatter = gson,
             leaderboardURL = URL(api + "leaderboard/")
-        )//FakeGeneralService()
+        )*/FakeGeneralService()
 
     override val authService: AuthService
-        get() = RealAuthService(
+        get() = /*RealAuthService(
             client = client,
             jsonFormatter = gson,
             registerURL = URL(api + "users/"),
             loginURL = URL(api + "users/login/")
-        )//FakeAuthService()
+        )*/FakeAuthService()
 
     override val lobbyService: LobbyService
-        get() = RealLobbyService(
+        get() = /*RealLobbyService(
             client = client,
             jsonFormatter = gson,
             lobbiesURL = URL(api + "lobbies/"),
             createURL = URL(api + "lobbies/create/"),
             lobbyURL = URL(api + "lobbies/"),
 
-        )//FakeLobbyService()
+        )*/FakeLobbyService()
 
     override val gameService: GameService
-        get() = RealGameService(
+        get() = /*RealGameService(
             client = client,
             jsonFormatter = gson,
             gameURL = URL(api + "game/"),
             fleetURL = URL(api + "game/my/fleet/"),
             enemyFleetURL = URL(api + "game/enemy/fleet/")
-        )//FakeGameService()
+        )*/FakeGameService()
 }

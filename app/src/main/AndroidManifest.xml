@@ -31,6 +31,9 @@
         <activity android:name=".menu.RankingActivity" />
         <activity android:name=".lobby.InvitesActivity" />
         <activity android:name=".lobby.LobbyActivity" />
-        <activity android:name=".game.GameActivity" />
+        <activity
+            android:name=".game.GameActivity"
+            android:screenOrientation="sensorPortrait"
+        />
     </application>
 </manifest>
